@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101828">
+    <title>NorthBank</title>
+
+    <style>
+        :root {
+            --navy: #101828;
+            --navy-light: #1d2939;
+            --blue: #3867f4;
+            --blue-light: #eef3ff;
+            --bg: #f5f7fb;
+            --white: #ffffff;
+            --text: #182230;
+            --muted: #667085;
+            --border: #eaecf0;
+            --green: #079455;
+            --red: #d92d20;
+            --radius: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, Arial, sans-serif;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .auth-page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: white;
+        }
+
+        .auth-brand {
+            padding: 54px;
+            background: var(--navy);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            letter-spacing: 1.8px;
+            font-size: 20px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: var(--blue);
+            color: white;
+            font-size: 23px;
+        }
+
+        .brand-copy {
+            max-width: 480px;
+            margin: 60px 0;
+        }
+
+        .brand-copy h1 {
+            font-size: clamp(36px, 4vw, 56px);
+            line-height: 1.1;
+            letter-spacing: -2px;
+            margin: 0 0 22px;
+        }
+
+        .brand-copy p {
+            color: #c0c8d6;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .security-note {
+            color: #b8c2d2;
+            font-size: 13px;
+        }
+
+        .auth-content {
+            display: grid;
+            place-items: center;
+            padding: 32px 24px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .auth-card h2 {
+            font-size: 30px;
+            margin: 0 0 8px;
+            letter-spacing: -.7px;
+        }
+
+        .subtext {
+            color: var(--muted);
+            line-height: 1.6;
+            margin: 0 0 28px;
+        }
+
+        .field {
+            margin-bottom: 17px;
+        }
+
+        .field label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            border: 1px solid #d0d5dd;
+            border-radius: 10px;
+            padding: 13px 14px;
+            outline: none;
+            background: white;
+            color: var(--text);
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px #3867f41a;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 10px;
+            padding: 12px 17px;
+            font-weight: 650;
+            transition: transform .15s, opacity .15s;
+        }
+
+        .btn:active {
+            transform: scale(.98);
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2855df;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 14px;
+        }
+
+        .btn-danger {
+            background: #fff1f0;
+            color: var(--red);
+        }
+
+        .auth-switch {
+            margin-top: 24px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .text-button {
+            color: var(--blue);
+            font-weight: 700;
+            border: 0;
+            background: transparent;
+            padding: 3px;
+        }
+
+        .app {
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 248px;
+            position: fixed;
+            inset: 0 auto 0 0;
+            background: var(--navy);
+            color: white;
+            padding: 26px 17px;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .sidebar .brand-logo {
+            padding: 0 8px 32px;
+            font-size: 16px;
+        }
+
+        .nav-label {
+            padding: 8px 12px;
+            text-transform: uppercase;
+            color: #98a2b3;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+        }
+
+        .nav-item {
+            display: flex;
+            gap: 13px;
+            align-items: center;
+            width: 100%;
+            padding: 13px 14px;
+            border: 0;
+            border-radius: 10px;
+            color: #c7d0dd;
+            background: transparent;
+            text-align: left;
+            margin: 3px 0;
+            font-size: 14px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: white;
+            background: #ffffff17;
+        }
+
+        .nav-icon {
+            width: 21px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .profile-mini {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 17px 7px 8px;
+            border-top: 1px solid #ffffff1c;
+            margin-top: 16px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: var(--blue);
+            background: #eaf0ff;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .profile-mini strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .profile-mini small {
+            display: block;
+            color: #aab5c5;
+            margin-top: 4px;
+            font-size: 11px;
+        }
+
+        .main {
+            margin-left: 248px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 82px;
+            padding: 0 38px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .topbar h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .topbar p {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            background: #12b76a;
+            margin-right: 6px;
+        }
+
+        .page-content {
+            max-width: 1450px;
+            padding: 32px 38px 48px;
+            margin: auto;
+        }
+
+        .welcome-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 26px;
+        }
+
+        .welcome-row h1 {
+            margin: 0 0 8px;
+            font-size: 27px;
+            letter-spacing: -.8px;
+        }
+
+        .welcome-row p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .balance-card {
+            color: white;
+            background: linear-gradient(125deg, #315df0, #173dbb);
+            padding: 29px;
+            border-radius: var(--radius);
+            min-height: 220px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-card::after {
+            content: "";
+            width: 260px;
+            height: 260px;
+            border: 1px solid #ffffff24;
+            border-radius: 50%;
+            position: absolute;
+            right: -60px;
+            top: -105px;
+            box-shadow: 0 0 0 28px #ffffff09, 0 0 0 57px #ffffff07;
+        }
+
+        .balance-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-label {
+            font-size: 13px;
+            color: #e0e8ff;
+        }
+
+        .balance-amount {
+            font-size: clamp(32px, 4vw, 43px);
+            font-weight: 750;
+            letter-spacing: -1.4px;
+            margin: 15px 0 25px;
+            position: relative;
+            z-index: 1;
+            overflow-wrap: anywhere;
+        }
+
+        .balance-bottom {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 12px;
+            color: #e0e8ff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-bottom strong {
+            display: block;
+            margin-top: 6px;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(270px, 1fr);
+            gap: 22px;
+        }
+
+        .section-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            min-width: 0;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .section-heading h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 12px;
+            margin: 6px 0 0;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .quick-action {
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 14px;
+            padding: 18px 10px;
+            text-align: center;
+            color: var(--text);
+        }
+
+        .quick-action:hover {
+            border-color: #b7c8ff;
+            background: #f9faff;
+        }
+
+        .quick-icon {
+            width: 42px;
+            height: 42px;
+            margin: 0 auto 10px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: var(--blue-light);
+            color: var(--blue);
+            font-size: 21px;
+        }
+
+        .quick-action strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .quick-action small {
+            display: block;
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .transaction-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .transaction-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0f1f4;
+        }
+
+        .transaction-row:last-child {
+            border-bottom: 0;
+        }
+
+        .transaction-icon {
+            width: 41px;
+            height: 41px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            background: #f2f4f7;
+            font-size: 18px;
+        }
+
+        .transaction-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .transaction-info strong {
+            display: block;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .transaction-info small {
+            display: block;
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .transaction-amount {
+            font-weight: 750;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .positive {
+            color: var(--green);
+        }
+
+        .negative {
+            color: var(--text);
+        }
+
+        .badge {
+            display: inline-block;
+            border-radius: 30px;
+            padding: 5px 9px;
+            font-size: 10px;
+            font-weight: 700;
+            background: #ecfdf3;
+            color: var(--green);
+        }
+
+        .badge.inactive {
+            background: #fff1f0;
+            color: var(--red);
+        }
+
+        .empty-state {
+            color: var(--muted);
+            text-align: center;
+            padding: 30px 10px;
+            font-size: 13px;
+        }
+
+        .page-title {
+            margin: 0 0 8px;
+            font-size: 27px;
+            letter-spacing: -.7px;
+        }
+
+        .page-description {
+            color: var(--muted);
+            margin: 0 0 25px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .form-card {
+            max-width: 650px;
+        }
+
+        .form-card .field {
+            margin-bottom: 20px;
+        }
+
+        .form-help {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+            margin: 12px 0 0;
+        }
+
+        .account-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item {
+            background: #f8f9fc;
+            border-radius: 12px;
+            padding: 18px;
+            min-width: 0;
+        }
+
+        .detail-item span {
+            display: block;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 9px;
+        }
+
+        .detail-item strong {
+            display: block;
+            font-size: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 650px;
+        }
+
+        th,
+        td {
+            padding: 15px 12px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            font-size: 12px;
+        }
+
+        th {
+            background: #f9fafb;
+            color: var(--muted);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+        }
+
+        td {
+            color: var(--text);
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            max-width: min(400px, calc(100vw - 40px));
+            padding: 14px 18px;
+            border-radius: 12px;
+            color: white;
+            background: var(--navy);
+            box-shadow: 0 12px 35px #1018282b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .toast.error {
+            background: #b42318;
+        }
+
+        .toast.success {
+            background: #067647;
+        }
+
+        .mobile-menu {
+            display: none;
+        }
+
+        .security-card {
+            max-width: 650px;
+        }
+
+        @media (max-width: 1050px) {
+            .sidebar {
+                width: 215px;
+            }
+
+            .main {
+                margin-left: 215px;
+            }
+
+            .topbar {
+                padding: 0 24px;
+            }
+
+            .page-content {
+                padding: 26px 24px 40px;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .auth-page {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-brand {
+                display: none;
+            }
+
+            .auth-content {
+                min-height: 100vh;
+            }
+
+            .sidebar {
+                width: 270px;
+                transform: translateX(-100%);
+                transition: transform .25s;
+                box-shadow: 10px 0 30px #10182818;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .topbar {
+                height: 72px;
+                padding: 0 17px;
+            }
+
+            .topbar h2 {
+                font-size: 16px;
+            }
+
+            .topbar p {
+                font-size: 11px;
+            }
+
+            .mobile-menu {
+                display: inline-flex;
+            }
+
+            .topbar-right .online-label {
+                display: none;
+            }
+
+            .page-content {
+                padding: 24px 16px 35px;
+            }
+
+            .welcome-row {
+                align-items: flex-start;
+            }
+
+            .welcome-row h1 {
+                font-size: 23px;
+            }
+
+            .balance-card {
+                padding: 23px;
+            }
+
+            .balance-amount {
+                font-size: 34px;
+            }
+
+            .section-card {
+                padding: 19px;
+            }
+
+            .quick-actions {
+                gap: 8px;
+            }
+
+            .quick-action {
+                padding: 14px 5px;
+            }
+
+            .account-detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .quick-action strong {
+                font-size: 11px;
+            }
+
+            .quick-action small {
+                font-size: 9px;
+            }
+
+            .balance-amount {
+                font-size: 29px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <section id="authPage" class="auth-page">
+        <div class="auth-brand">
+            <div class="brand-logo">
+                <div class="logo-icon">N</div>
+                NORTHBANK
+            </div>
+            <div class="brand-copy">
+                <h1>Banking that moves with you.</h1>
+                <p>
+                    Manage your account, transfer money, and keep track of your
+                    transactions from one simple, secure dashboard.
+                </p>
+            </div>
+            <div class="security-note">● Secure session-based access · Demo project</div>
+        </div>
+
+        <div class="auth-content">
+            <div class="auth-card">
+                <div id="loginPanel">
+                    <h2>Welcome back</h2>
+                    <p class="subtext">Sign in to access your banking dashboard.</p>
+
+                    <form id="loginForm">
+                        <div class="field">
+                            <label for="loginUsername">Username</label>
+                            <input id="loginUsername" name="username" autocomplete="username" required maxlength="50"
+                                placeholder="Enter your username">
+                        </div>
+                        <div class="field">
+                            <label for="loginPassword">Password</label>
+                            <input id="loginPassword" name="password" type="password" autocomplete="current-password"
+                                required placeholder="Enter your password">
+                        </div>
+                        <button id="loginButton" class="btn btn-primary btn-full" type="submit">
+                            Sign in
+                        </button>
+                    </form>
+                    <div class="auth-switch">
+                        New to NorthBank?
+                        <button class="text-button" type="button" id="showRegister">Create an account</button>
+                    </div>
+                </div>
+
+                <div id="registerPanel" class="hidden">
+                    <h2>Create account</h2>
+                    <p class="subtext">Fill in your details to get started.</p>
+
+                    <form id="registerForm">
+                        <div class="field">
+                            <label for="registerName">Full name</label>
+                            <input id="registerName" name="fullName" autocomplete="name" required maxlength="100"
+                                placeholder="Your full name">
+                        </div>
+                        <div class="field">
+                            <label for="registerEmail">Email address</label>
+                            <input id="registerEmail" name="email" type="email" autocomplete="email" required
+                                maxlength="150" placeholder="you@example.com">
+                        </div>
+                        <div class="field">
+                            <label for="registerUsername">Username</label>
+                            <input id="registerUsername" name="username" autocomplete="username" required minlength="3"
+                                maxlength="50" pattern="[A-Za-z0-9_]+" placeholder="Choose a username">
+                        </div>
+                        <div class="field">
+                            <label for="registerPassword">Password</label>
+                            <input id="registerPassword" name="password" type="password" autocomplete="new-password"
+                                required minlength="12" maxlength="72" placeholder="At least 12 characters">
+                        </div>
+                        <button id="registerButton" class="btn btn-primary btn-full" type="submit">
+                            Create account
+                        </button>
+                    </form>
+                    <div class="auth-switch">
+                        Already have an account?
+                        <button class="text-button" type="button" id="showLogin">Sign in</button>
+                    </div>
+                </div>
+
+                <p class="form-help" style="margin-top:30px;text-align:center">
+                    Educational demo only. Do not use real banking credentials or sensitive financial information.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="bankApp" class="app hidden">
+        <aside id="sidebar" class="sidebar">
+            <div class="brand-logo">
+                <div class="logo-icon">N</div>
+                NORTHBANK
+            </div>
+
+            <div class="nav-label">Workspace</div>
+            <button class="nav-item active" data-page="dashboard"><span class="nav-icon">⌂</span> Dashboard</button>
+            <button class="nav-item" data-page="account"><span class="nav-icon">▣</span> My account</button>
+            <button class="nav-item" data-page="transfer"><span class="nav-icon">⇄</span> Transfer money</button>
+            <button class="nav-item" data-page="transactions"><span class="nav-icon">↕</span> Transactions</button>
+
+            <div class="nav-label" style="margin-top:20px">Preferences</div>
+            <button class="nav-item" data-page="security"><span class="nav-icon">♙</span> Security</button>
+
+            <div class="sidebar-bottom">
+                <button id="logoutButton" class="nav-item"><span class="nav-icon">↪</span> Sign out</button>
+                <div class="profile-mini">
+                    <div class="avatar" id="miniAvatar">U</div>
+                    <div style="min-width:0">
+                        <strong id="miniName">User</strong>
+                        <small id="miniRole">CUSTOMER</small>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div style="display:flex;align-items:center;gap:12px">
+                    <button id="mobileMenu" class="btn btn-outline mobile-menu" aria-label="Open menu">☰</button>
+                    <div>
+                        <h2 id="topbarTitle">Dashboard</h2>
+                        <p id="todayLabel">Your banking overview</p>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <span class="online-label" style="font-size:12px;color:var(--muted)">
+                        <span class="status-dot"></span>Account connected
+                    </span>
+                    <div class="avatar" id="topAvatar">U</div>
+                </div>
+            </header>
+
+            <div class="page-content">
+
+                <section id="page-dashboard" class="app-page">
+                    <div class="welcome-row">
+                        <div>
+                            <h1 id="welcomeTitle">Good day!</h1>
+                            <p>Here is what's happening with your account.</p>
+                        </div>
+                        <button class="btn btn-outline" id="refreshButton">↻ Refresh</button>
+                    </div>
+
+                    <div class="grid-2">
+                        <div>
+                            <div class="balance-card">
+                                <div class="balance-top">
+                                    <span class="balance-label">Available balance</span>
+                                    <span style="font-size:22px">▰</span>
+                                </div>
+                                <div id="dashboardBalance" class="balance-amount">₹ —</div>
+                                <div class="balance-bottom">
+                                    <div>ACCOUNT NUMBER<strong id="dashboardAccountNumber">Loading…</strong></div>
+                                    <div style="text-align:right">ACCOUNT STATUS<strong
+                                            id="dashboardAccountStatus">—</strong></div>
+                                </div>
+                            </div>
+
+                            <div class="quick-actions">
+                                <button class="quick-action" data-go="deposit">
+                                    <span class="quick-icon">＋</span>
+                                    <strong>Deposit</strong>
+                                    <small>Add funds</small>
+                                </button>
+                                <button class="quick-action" data-go="withdraw">
+                                    <span class="quick-icon">↗</span>
+                                    <strong>Withdraw</strong>
+                                    <small>Take out funds</small>
+                                </button>
+                                <button class="quick-action" data-go="transfer">
+                                    <span class="quick-icon">⇄</span>
+                                    <strong>Transfer</strong>
+                                    <small>Send money</small>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="section-card">
+                            <div class="section-heading">
+                                <div>
+                                    <h3>Recent transactions</h3>
+                                    <p>Your latest account activity</p>
+                                </div>
+                                <button class="text-button" data-go="transactions">View all</button>
+                            </div>
+                            <div id="recentTransactions" class="transaction-list">
+                                <div class="empty-state">Loading transactions…</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="page-account" class="app-page hidden">
+                    <h1 class="page-title">My account</h1>
+                    <p class="page-description">View your personal and bank account information.</p>
+                    <div class="section-card">
+                        <div class="section-heading">
+                            <div>
+                                <h3>Account details</h3>
+                                <p>Your registered profile and account status</p>
+                            </div>
+                            <span id="accountStatusBadge" class="badge">ACTIVE</span>
+                        </div>
+                        <div class="account-detail-grid">
+                            <div class="detail-item"><span>Full name</span><strong id="detailName">—</strong></div>
+                            <div class="detail-item"><span>Username</span><strong id="detailUsername">—</strong></div>
+                            <div class="detail-item"><span>Email address</span><strong id="detailEmail">—</strong></div>
+                            <div class="detail-item"><span>Account number</span><strong
+                                    id="detailAccountNumber">—</strong></div>
+                            <div class="detail-item"><span>Available balance</span><strong id="detailBalance">—</strong>
+                            </div>
+                            <div class="detail-item"><span>Account status</span><strong id="detailStatus">—</strong>
+                            </div>
+                            <div class="detail-item"><span>Member since</span><strong id="detailCreated">—</strong>
+                            </div>
+                            <div class="detail-item"><span>Account type</span><strong>Personal</strong></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="page-deposit" class="app-page hidden">
+                    <h1 class="page-title">Deposit funds</h1>
+                    <p class="page-description">Add a simulated deposit to your demo bank account.</p>
+                    <div class="section-card form-card">
+                        <div class="section-heading">
+                            <div>
+                                <h3>Deposit details</h3>
+                                <p>Enter the amount you want to deposit.</p>
+                            </div>
+                            <span class="quick-icon">＋</span>
+                        </div>
+                        <form id="depositForm">
+                            <div class="field">
+                                <label for="depositAmount">Amount (₹)</label>
+                                <input id="depositAmount" type="number" min="0.01" max="100000000" step="0.01" required
+                                    placeholder="0.00">
+                            </div>
+                            <button id="depositButton" type="submit" class="btn btn-primary btn-full">Confirm
+                                deposit</button>
+                            <p class="form-help">This is a simulated transaction. It does not deposit real money.</p>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="page-withdraw" class="app-page hidden">
+                    <h1 class="page-title">Withdraw funds</h1>
+                    <p class="page-description">Withdraw a simulated amount from your account balance.</p>
+                    <div class="section-card form-card">
+                        <div class="section-heading">
+                            <div>
+                                <h3>Withdrawal details</h3>
+                                <p>Enter the amount to withdraw.</p>
+                            </div>
+                            <span class="quick-icon">↗</span>
+                        </div>
+                        <form id="withdrawForm">
+                            <div class="field">
+                                <label for="withdrawAmount">Amount (₹)</label>
+                                <input id="withdrawAmount" type="number" min="0.01" max="100000000" step="0.01" required
+                                    placeholder="0.00">
+                            </div>
+                            <button id="withdrawButton" type="submit" class="btn btn-primary btn-full">Confirm
+                                withdrawal</button>
+                            <p class="form-help">The backend should reject withdrawals that exceed your available
+                                balance.</p>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="page-transfer" class="app-page hidden">
+                    <h1 class="page-title">Transfer money</h1>
+                    <p class="page-description">Send funds to another account in this demo bank.</p>
+                    <div class="section-card form-card">
+                        <div class="section-heading">
+                            <div>
+                                <h3>Transfer details</h3>
+                                <p>Double-check the recipient's account number.</p>
+                            </div>
+                            <span class="quick-icon">⇄</span>
+                        </div>
+                        <form id="transferForm">
+                            <div class="field">
+                                <label for="recipientAccount">Recipient account number</label>
+                                <input id="recipientAccount" required maxlength="30"
+                                    placeholder="Enter recipient's account number">
+                            </div>
+                            <div class="field">
+                                <label for="transferAmount">Amount (₹)</label>
+                                <input id="transferAmount" type="number" min="0.01" max="100000000" step="0.01" required
+                                    placeholder="0.00">
+                            </div>
+                            <div class="field">
+                                <label for="transferDescription">Description (optional)</label>
+                                <input id="transferDescription" maxlength="150" placeholder="e.g. Shared expenses">
+                            </div>
+                            <button id="transferButton" type="submit" class="btn btn-primary btn-full">Confirm
+                                transfer</button>
+                            <p class="form-help">Transfers update balances in your local demo database. Verify the
+                                recipient before confirming.</p>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="page-transactions" class="app-page hidden">
+                    <h1 class="page-title">Transactions</h1>
+                    <p class="page-description">Review deposits, withdrawals, and transfers recorded on your account.
+                    </p>
+                    <div class="section-card">
+                        <div class="section-heading">
+                            <div>
+                                <h3>Transaction history</h3>
+                                <p id="transactionSummary">Your account activity</p>
+                            </div>
+                            <button id="historyRefreshButton" class="btn btn-outline">↻ Refresh</button>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Reference</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyTableBody">
+                                    <tr>
+                                        <td colspan="6" class="empty-state">Loading transactions…</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pagination">
+                            <span id="pageInfo">Page 1</span>
+                            <div style="display:flex;gap:8px">
+                                <button id="prevPageButton" class="btn btn-outline" disabled>Previous</button>
+                                <button id="nextPageButton" class="btn btn-outline" disabled>Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="page-security" class="app-page hidden">
+                    <h1 class="page-title">Security</h1>
+                    <p class="page-description">Change the password used to sign in to your account.</p>
+                    <div class="section-card form-card security-card">
+                        <div class="section-heading">
+                            <div>
+                                <h3>Change password</h3>
+                                <p>Use a strong password that you do not use elsewhere.</p>
+                            </div>
+                            <span class="quick-icon">⌑</span>
+                        </div>
+                        <form id="passwordForm">
+                            <div class="field">
+                                <label for="currentPassword">Current password</label>
+                                <input id="currentPassword" type="password" required autocomplete="current-password">
+                            </div>
+                            <div class="field">
+                                <label for="newPassword">New password</label>
+                                <input id="newPassword" type="password" required minlength="12" maxlength="72"
+                                    autocomplete="new-password" placeholder="At least 12 characters">
+                            </div>
+                            <div class="field">
+                                <label for="confirmPassword">Confirm new password</label>
+                                <input id="confirmPassword" type="password" required minlength="12" maxlength="72"
+                                    autocomplete="new-password">
+                            </div>
+                            <button id="passwordButton" type="submit" class="btn btn-primary btn-full">Update
+                                password</button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </section>
+
+    <script>
+        "use strict";
+
+        const API = {
+            csrf: "/api/auth/csrf",
+            register: "/api/auth/register",
+            login: "/api/auth/login",
+            logout: "/api/auth/logout",
+            me: "/api/auth/me",
+            account: "/api/accounts/me",
+            deposit: "/api/transactions/deposit",
+            withdraw: "/api/transactions/withdraw",
+            transfer: "/api/transactions/transfer",
+            transactions: "/api/transactions",
+            changePassword: "/api/auth/change-password"
+        };
+
+        const state = {
+            csrfToken: "",
+            csrfHeader: "X-XSRF-TOKEN",
+            user: null,
+            account: null,
+            transactionPage: 0,
+            transactionTotalPages: 0,
+            transactions: []
+        };
+
+        const $ = (id) => document.getElementById(id);
+
+        function escapeHTML(value) {
+            return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            })[char]);
+        }
+
+        function money(value) {
+            const amount = Number(value ?? 0);
+            if (!Number.isFinite(amount)) return "₹ —";
+            return amount.toLocaleString("en-IN", {
+                style: "currency",
+                currency: "INR",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function formatDate(value) {
+            if (!value) return "—";
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value);
+            return date.toLocaleString("en-IN", {
+                day: "2-digit", month: "short", year: "numeric",
+                hour: "2-digit", minute: "2-digit"
+            });
+        }
+
+        function displayName() {
+            return state.user?.fullName || state.user?.username || "Customer";
+        }
+
+        function accountNumber() {
+            return state.account?.accountNumber
+                ?? state.account?.account_number
+                ?? "Unavailable";
+        }
+
+        function currentBalance() {
+            return state.account?.balance ?? 0;
+        }
+
+        function showToast(message, type = "success") {
+            const toast = $("toast");
+            toast.textContent = message;
+            toast.className = "toast " + type;
+            clearTimeout(showToast.timer);
+            showToast.timer = setTimeout(() => toast.classList.add("hidden"), 4500);
+        }
+
+        async function readBody(response) {
+            const text = await response.text();
+            if (!text) return null;
+            try { return JSON.parse(text); }
+            catch { return text; }
+        }
+
+        function errorMessage(body, fallback) {
+            if (typeof body === "string" && body.trim()) return body;
+            if (body && typeof body === "object") {
+                return body.message || body.detail || body.error || body.title || fallback;
+            }
+            return fallback;
+        }
+
+        async function refreshCsrf() {
+            const response = await fetch(API.csrf, {
+                method: "GET",
+                credentials: "same-origin",
+                headers: { "Accept": "application/json" },
+                cache: "no-store"
+            });
+
+            const body = await readBody(response);
+            if (!response.ok) {
+                throw new Error(errorMessage(body, "Could not initialize security token."));
+            }
+
+            if (body && typeof body === "object") {
+                state.csrfToken = body.token || body.csrfToken || "";
+                state.csrfHeader = body.headerName || "X-XSRF-TOKEN";
+            }
+
+            if (!state.csrfToken) {
+                const cookie = document.cookie.split("; ").find(row =>
+                    row.startsWith("XSRF-TOKEN=")
+                );
+                if (cookie) {
+                    state.csrfToken = decodeURIComponent(cookie.substring("XSRF-TOKEN=".length));
+                }
+            }
+        }
+
+        async function api(path, options = {}) {
+            const method = (options.method || "GET").toUpperCase();
+            const headers = new Headers(options.headers || {});
+            headers.set("Accept", "application/json");
+
+            if (options.body !== undefined && !(options.body instanceof URLSearchParams)) {
+                headers.set("Content-Type", "application/json");
+            }
+
+            const unsafe = !["GET", "HEAD", "OPTIONS", "TRACE"].includes(method);
+            if (unsafe) {
+                if (!state.csrfToken) await refreshCsrf();
+                if (state.csrfToken) headers.set(state.csrfHeader, state.csrfToken);
+            }
+
+            const response = await fetch(path, {
+                ...options,
+                method,
+                headers,
+                credentials: "same-origin",
+                cache: "no-store"
+            });
+
+            const body = await readBody(response);
+
+            if (response.status === 401) {
+                if (!$("authPage").classList.contains("hidden")) {
+                    throw new Error(errorMessage(body, "Please sign in with your username and password."));
+                }
+                showAuth();
+                throw new Error("Your session has expired. Please sign in again.");
+            }
+
+            if (!response.ok) {
+                throw new Error(errorMessage(body, `Request failed (${response.status}).`));
+            }
+
+            return body;
+        }
+
+        function setBusy(buttonId, busy, busyText = "Please wait…") {
+            const button = $(buttonId);
+            if (!button) return;
+            if (busy) {
+                button.dataset.originalText = button.textContent;
+                button.textContent = busyText;
+                button.disabled = true;
+            } else {
+                button.textContent = button.dataset.originalText || button.textContent;
+                button.disabled = false;
+            }
+        }
+
+        function showAuth(mode = "login") {
+            $("bankApp").classList.add("hidden");
+            $("authPage").classList.remove("hidden");
+            $("loginPanel").classList.toggle("hidden", mode !== "login");
+            $("registerPanel").classList.toggle("hidden", mode !== "register");
+            $("sidebar").classList.remove("open");
+            state.user = null;
+            state.account = null;
+        }
+
+        function showApp() {
+            $("authPage").classList.add("hidden");
+            $("bankApp").classList.remove("hidden");
+
+            const name = displayName();
+            const initial = name.trim().charAt(0).toUpperCase() || "U";
+            $("miniName").textContent = name;
+            $("miniRole").textContent = state.user?.role || "CUSTOMER";
+            $("miniAvatar").textContent = initial;
+            $("topAvatar").textContent = initial;
+            $("welcomeTitle").textContent = "Welcome, " + name.split(" ")[0] + "!";
+            $("todayLabel").textContent = new Date().toLocaleDateString("en-IN", {
+                weekday: "long", day: "numeric", month: "long", year: "numeric"
+            });
+        }
+
+        function goToPage(page) {
+            document.querySelectorAll(".app-page").forEach(section => {
+                section.classList.toggle("hidden", section.id !== "page-" + page);
+            });
+
+            document.querySelectorAll(".nav-item[data-page]").forEach(button => {
+                button.classList.toggle("active", button.dataset.page === page);
+            });
+
+            const titles = {
+                dashboard: "Dashboard",
+                account: "My account",
+                deposit: "Deposit funds",
+                withdraw: "Withdraw funds",
+                transfer: "Transfer money",
+                transactions: "Transactions",
+                security: "Security"
+            };
+            $("topbarTitle").textContent = titles[page] || "NorthBank";
+            $("sidebar").classList.remove("open");
+
+            if (page === "account") renderAccount();
+            if (page === "transactions") loadTransactions(state.transactionPage);
+        }
+
+        function normalizeTransactionPage(body) {
+            if (Array.isArray(body)) {
+                return { content: body, number: 0, totalPages: 1, totalElements: body.length };
+            }
+            if (body && Array.isArray(body.content)) return body;
+            if (body && Array.isArray(body.transactions)) {
+                return { content: body.transactions, number: 0, totalPages: 1, totalElements: body.transactions.length };
+            }
+            return { content: [], number: 0, totalPages: 0, totalElements: 0 };
+        }
+
+        function transactionType(tx) {
+            return String(tx.type || tx.transactionType || "TRANSACTION").toUpperCase();
+        }
+
+        function transactionAmount(tx) {
+            return Number(tx.amount ?? 0);
+        }
+
+        function transactionIsCredit(tx) {
+            const type = transactionType(tx);
+            return type.includes("DEPOSIT") ||
+                (type.includes("TRANSFER") && String(tx.description || "").toLowerCase().includes("received"));
+        }
+
+        function transactionDescription(tx) {
+            return tx.description || tx.relatedAccountNumber
+                ? (tx.description || "Related account: " + tx.relatedAccountNumber)
+                : transactionType(tx).replaceAll("_", " ");
+        }
+
+        function renderRecentTransactions(items) {
+            const container = $("recentTransactions");
+            if (!items.length) {
+                container.innerHTML = '<div class="empty-state">No transactions yet. Your activity will appear here.</div>';
+                return;
+            }
+
+            container.innerHTML = items.slice(0, 5).map(tx => {
+                const type = transactionType(tx);
+                const credit = transactionIsCredit(tx);
+                const amount = transactionAmount(tx);
+                const icon = type.includes("DEPOSIT") ? "＋"
+                    : type.includes("WITHDRAW") ? "↗"
+                        : type.includes("TRANSFER") ? "⇄" : "↕";
+                const date = formatDate(tx.createdAt || tx.timestamp || tx.date);
+                const amountClass = credit ? "positive" : "negative";
+                const sign = credit ? "+" : (type.includes("WITHDRAW") || type.includes("TRANSFER") ? "−" : "");
+                return `
+          <div class="transaction-row">
+            <div class="transaction-icon">${icon}</div>
+            <div class="transaction-info">
+              <strong>${escapeHTML(transactionDescription(tx))}</strong>
+              <small>${escapeHTML(date)}</small>
+            </div>
+            <div class="transaction-amount ${amountClass}">${sign}${money(amount)}</div>
+          </div>`;
+            }).join("");
+        }
+
+        function renderAccount() {
+            const user = state.user || {};
+            const account = state.account || {};
+            $("detailName").textContent = user.fullName || "—";
+            $("detailUsername").textContent = user.username || "—";
+            $("detailEmail").textContent = user.email || "—";
+            $("detailAccountNumber").textContent = accountNumber();
+            $("detailBalance").textContent = money(currentBalance());
+            $("detailStatus").textContent = account.status || user.status || "—";
+            $("detailCreated").textContent = formatDate(account.createdAt || user.createdAt);
+
+            const status = String(account.status || user.status || "ACTIVE").toUpperCase();
+            $("accountStatusBadge").textContent = status;
+            $("accountStatusBadge").classList.toggle("inactive", status !== "ACTIVE");
+        }
+
+        function renderDashboard() {
+            $("dashboardBalance").textContent = money(currentBalance());
+            $("dashboardAccountNumber").textContent = accountNumber();
+            $("dashboardAccountStatus").textContent =
+                state.account?.status || state.user?.status || "ACTIVE";
+            renderAccount();
+        }
+
+        function renderHistoryTable(items) {
+            const body = $("historyTableBody");
+            if (!items.length) {
+                body.innerHTML = '<tr><td colspan="6" class="empty-state">No transactions found.</td></tr>';
+                return;
+            }
+
+            body.innerHTML = items.map(tx => {
+                const type = transactionType(tx);
+                const credit = transactionIsCredit(tx);
+                const status = String(tx.status || "COMPLETED").toUpperCase();
+                const ref = tx.reference || tx.referenceNumber || tx.id || "—";
+                const date = formatDate(tx.createdAt || tx.timestamp || tx.date);
+                const sign = credit ? "+" :
+                    (type.includes("WITHDRAW") || type.includes("TRANSFER") ? "−" : "");
+                return `<tr>
+          <td>${escapeHTML(ref)}</td>
+          <td>${escapeHTML(type.replaceAll("_", " "))}</td>
+          <td>${escapeHTML(transactionDescription(tx))}</td>
+          <td>${escapeHTML(date)}</td>
+          <td class="${credit ? "positive" : ""}">${sign}${money(transactionAmount(tx))}</td>
+          <td><span class="badge ${status !== "COMPLETED" && status !== "SUCCESS" ? "inactive" : ""}">${escapeHTML(status)}</span></td>
+        </tr>`;
+            }).join("");
+        }
+
+        async function loadTransactions(page = 0) {
+            state.transactionPage = Math.max(0, page);
+            $("historyTableBody").innerHTML =
+                '<tr><td colspan="6" class="empty-state">Loading transactions…</td></tr>';
+
+            try {
+                const result = await api(`${API.transactions}?page=${state.transactionPage}&size=10`);
+                const data = normalizeTransactionPage(result);
+                state.transactions = data.content || [];
+                state.transactionPage = Number(data.number ?? state.transactionPage);
+                state.transactionTotalPages = Number(data.totalPages ?? 1);
+
+                $("transactionSummary").textContent =
+                    `${data.totalElements ?? state.transactions.length} transaction(s)`;
+                $("pageInfo").textContent =
+                    `Page ${state.transactionTotalPages ? state.transactionPage + 1 : 0} of ${state.transactionTotalPages}`;
+                $("prevPageButton").disabled = state.transactionPage <= 0;
+                $("nextPageButton").disabled =
+                    state.transactionTotalPages === 0 ||
+                    state.transactionPage >= state.transactionTotalPages - 1;
+
+                renderHistoryTable(state.transactions);
+                renderRecentTransactions(state.transactions);
+            } catch (error) {
+                $("historyTableBody").innerHTML =
+                    `<tr><td colspan="6" class="empty-state">${escapeHTML(error.message)}</td></tr>`;
+                $("recentTransactions").innerHTML =
+                    `<div class="empty-state">${escapeHTML(error.message)}</div>`;
+            }
+        }
+
+        async function loadAccountData() {
+            const results = await Promise.allSettled([
+                api(API.me),
+                api(API.account)
+            ]);
+
+            if (results[0].status === "fulfilled") {
+                state.user = results[0].value || {};
+            } else {
+                throw results[0].reason;
+            }
+
+            if (results[1].status === "fulfilled") {
+                state.account = results[1].value || {};
+            } else {
+                showToast("Profile loaded, but account details could not be loaded: " +
+                    results[1].reason.message, "error");
+            }
+
+            showApp();
+            renderDashboard();
+            await loadTransactions(0);
+        }
+
+        async function checkSession() {
+            try {
+                await refreshCsrf();
+                const me = await api(API.me);
+                state.user = me || {};
+                const account = await api(API.account);
+                state.account = account || {};
+                showApp();
+                renderDashboard();
+                await loadTransactions(0);
+            } catch {
+                showAuth("login");
+            }
+        }
+
+        function parseAmount(inputId) {
+            const value = Number($(inputId).value);
+            if (!Number.isFinite(value) || value <= 0) {
+                throw new Error("Enter an amount greater than zero.");
+            }
+            if (Math.round(value * 100) !== value * 100) {
+                throw new Error("Amount can have at most two decimal places.");
+            }
+            return value.toFixed(2);
+        }
+
+        async function afterTransaction(message) {
+            showToast(message, "success");
+            $("depositForm").reset();
+            $("withdrawForm").reset();
+            $("transferForm").reset();
+            await loadAccountData();
+            goToPage("dashboard");
+        }
+
+        $("showRegister").addEventListener("click", () => showAuth("register"));
+        $("showLogin").addEventListener("click", () => showAuth("login"));
+        $("registerForm").addEventListener("submit", async event => {
+            event.preventDefault();
+            setBusy("registerButton", true, "Creating account…");
+
+            try {
+                const payload = {
+                    fullName: $("registerName").value.trim(),
+                    email: $("registerEmail").value.trim(),
+                    username: $("registerUsername").value.trim(),
+                    password: $("registerPassword").value
+                };
+
+                await refreshCsrf();
+                await api(API.register, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+
+                $("registerForm").reset();
+                showToast("Account created. Please sign in.", "success");
+                showAuth("login");
+                $("loginUsername").value = payload.username;
+            } catch (error) {
+                showToast(error.message, "error");
+            } finally {
+                setBusy("registerButton", false);
+            }
+        });
+
+        $("loginForm").addEventListener("submit", async event => {
+            event.preventDefault();
+            setBusy("loginButton", true, "Signing in…");
+
+            try {
+                await refreshCsrf();
+                const form = new URLSearchParams();
+                form.set("username", $("loginUsername").value.trim());
+                form.set("password", $("loginPassword").value);
+
+                await api(API.login, {
+                    method: "POST",
+                    body: form,
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" }
+                });
+
+                state.csrfToken = "";
+                await refreshCsrf();
+                await loadAccountData();
+                showToast("Signed in successfully.", "success");
+                $("loginForm").reset();
+            } catch (error) {
+                showToast(error.message, "error");
+            } finally {
+                setBusy("loginButton", false);
+            }
+        });
+
+        $("depositForm").addEventListener("submit", async event => {
+            event.preventDefault();
+            setBusy("depositButton", true, "Processing…");
+            try {
+                const amount = parseAmount("depositAmount");
+                await api(API.deposit, {
+                    method: "POST",
+                    body: JSON.stringify({ amount })
+                });
+                await afterTransaction("Deposit recorded successfully.");
+            } catch (error) {
+                showToast(error.message, "error");
+            } finally {
+                setBusy("depositButton", false);
+            }
+        });
+
+        $("withdrawForm").addEventListener("submit", async event => {
+            event.preventDefault();
+            setBusy("withdrawButton", true, "Processing…");
+            try {
+                const amount = parseAmount("withdrawAmount");
+                await api(API.withdraw, {
+                    method: "POST",
+                    body: JSON.stringify({ amount })
+                });
+                await afterTransaction("Withdrawal recorded successfully.");
+            } catch (error) {
+                showToast(error.message, "error");
+            } finally {
+                setBusy("withdrawButton", false);
+            }
+        });
+
+        $("transferForm").addEventListener("submit", async event => {
+            event.preventDefault();
+            setBusy("transferButton", true, "Transferring…");
+            try {
+                const recipientAccountNumber = $("recipientAccount").value.trim();
+                if (!recipientAccountNumber) throw new Error("Enter the recipient account number.");
+
+                const amount = parseAmount("transferAmount");
+                const description = $("transferDescription").value.trim();
+
+                await api(API.transfer, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        recipientAccountNumber,
+                        amount,
+                        description
+                    })
+                });
+
+                await afterTransaction("Transfer completed successfully.");
+            } catch (error) {
+                showToast(error.message, "error");
+            } finally {
+                setBusy("transferButton", false);
+            }
+        });
+
+        $("passwordForm").addEventListener("submit", async event => {
+            event.preventDefault();
+
+            const currentPassword = $("currentPassword").value;
+            const newPassword = $("newPassword").value;
+            const confirmPassword = $("confirmPassword").value;
+
+            if (newPassword !== confirmPassword) {
+                showToast("The new passwords do not match.", "error");
+                return;
+            }
+            if (newPassword === currentPassword) {
+                showToast("Choose a different password.", "error");
+                return;
+            }
+
+            setBusy("passwordButton", true, "Updating…");
+            try {
+                await api(API.changePassword, {
+                    method: "POST",
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+                $("passwordForm").reset();
+                showToast("Password updated successfully.", "success");
+            } catch (error) {
+                showToast(error.message, "error");
+            } finally {
+                setBusy("passwordButton", false);
+            }
+        });
+
+        $("logoutButton").addEventListener("click", async () => {
+            try {
+                await api(API.logout, { method: "POST" });
+                showToast("You have signed out.", "success");
+            } catch (error) {
+                showToast(error.message, "error");
+            } finally {
+                state.csrfToken = "";
+                state.user = null;
+                state.account = null;
+                showAuth("login");
+            }
+        });
+
+        document.querySelectorAll("[data-page]").forEach(button => {
+            button.addEventListener("click", () => goToPage(button.dataset.page));
+        });
+
+        document.querySelectorAll("[data-go]").forEach(button => {
+            button.addEventListener("click", () => goToPage(button.dataset.go));
+        });
+
+        $("refreshButton").addEventListener("click", async () => {
+            try {
+                await loadAccountData();
+                showToast("Account information refreshed.");
+            } catch (error) {
+                showToast(error.message, "error");
+            }
+        });
+
+        $("historyRefreshButton").addEventListener("click", () => loadTransactions(state.transactionPage));
+
+        $("prevPageButton").addEventListener("click", () => {
+            if (state.transactionPage > 0) loadTransactions(state.transactionPage - 1);
+        });
+
+        $("nextPageButton").addEventListener("click", () => {
+            if (state.transactionPage + 1 < state.transactionTotalPages) {
+                loadTransactions(state.transactionPage + 1);
+            }
+        });
+
+        $("mobileMenu").addEventListener("click", () => {
+            $("sidebar").classList.toggle("open");
+        });
+
+        checkSession();
+    </script>
+</body>
+
+</html>
